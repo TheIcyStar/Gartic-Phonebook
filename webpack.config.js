@@ -37,7 +37,7 @@ var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.jsx'),
-    contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
+    contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.ts'),
   },
   chromeExtensionBoilerplate: {
     notHotReload: ['background', 'contentScript', 'devtools'],
