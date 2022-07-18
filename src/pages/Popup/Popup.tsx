@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useDebugValue, useState } from 'react';
 import './Popup.css'
 
 type PlayerData = {
@@ -16,35 +16,44 @@ const dummyData: PlayerData[] = [
   }
 ]
 
-
 const Popup = () => {
+  const [data, setData] = useState<PlayerData[]>(dummyData)
+
+  function onAddPlayerClick(){
+    setData([...data, {username: "New user", imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg"}])
+  }
+
   return (
     <div className="App">
       <div className='TopBanner py-2 mx-0 shadow-xl'>
         <p className='text-lg text-white'>Custom Gartic Avatars</p>
       </div>
       <ul className='PlayerHolder mx-3'>
-        {dummyData.map((player) => (<PlayerDisplay playerData={player}></PlayerDisplay>))}
+        {data.map((player, index) => (<PlayerDisplay 
+          playerData={player}
+          index={index}
+          fullData={data}
+          setData={setData}
+        ></PlayerDisplay>)
+        )}
 
-        <AddButton></AddButton>
+        <button className='AddButton text-6xl border-2 border-white align-middle text-center text-white border-dotted rounded-2xl min-w-full' onClick={onAddPlayerClick}>+</button>
       </ul>
     </div>
   )
 }
 
-function PlayerDisplay({playerData}: {playerData: PlayerData}): JSX.Element{
-  console.log(playerData)
+function PlayerDisplay({playerData, index, fullData, setData}: {playerData: PlayerData, index: number, fullData: PlayerData[], setData: React.Dispatch<React.SetStateAction<PlayerData[]>>}): JSX.Element{
+
+  function handleTextChange(event: React.FormEvent<HTMLInputElement>){
+    console.log(event)
+  }
+
   return (
     <li className='AvatarHolder flex justify-start my-3 rounded-2xl shadow-md'>
       <img className='AvatarPicture h-14 my-1 mx-1 aspect-square rounded-full items-center' src={playerData.imageURL} alt={playerData.username+"'s avatar"}></img>
-      <p className='AvatarUsername uppercase text-left align-middle items-center'>{playerData.username}</p>
+      <input className="AvatarUsername basis-3/4 uppercase bg-transparent placeholder-gray-500" name='username' onChange={handleTextChange} placeholder="New user"></input>
     </li>
-  )
-}
-
-function AddButton(): JSX.Element{
-  return (
-    <button className='AddButton text-6xl border-2 border-white align-middle text-center text-white border-dotted rounded-2xl min-w-full'>+</button>
   )
 }
 
