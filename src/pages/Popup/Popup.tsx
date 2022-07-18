@@ -67,7 +67,7 @@ function PlayerDisplay({playerData, index, fullData, setData}: {playerData: Play
     <li className='AvatarHolder flex justify-start my-3 rounded-2xl shadow-md'>
       <img className='AvatarPicture h-14 my-1 mx-1 aspect-square rounded-full items-center' src={playerData.imageURL} alt={playerData.username+"'s avatar"}></img>
       <input className="AvatarUsername basis-3/4 uppercase bg-transparent placeholder-gray-500" name='username' onChange={handleTextChange} placeholder="I'm blank!" value={playerData.username}></input>
-      <button className='text-white rounded-full bg-red-500 mx-2 px-3 text-lg absolute right-1' onClick={handleRemove}>x</button>
+      <button className='AvatarDelete rounded-full mx-3 my-0.5 px-2 text-md absolute right-1' onClick={handleRemove}>x</button>
     </li>
   )
 }

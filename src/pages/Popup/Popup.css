@@ -23,3 +23,12 @@
   font-size: 50px;
   font-size: 5vw;
 }
+
+.AvatarDelete {
+  color: white;
+  background-color: rgb(215, 56, 56);
+}
+
+.AvatarDelete:hover {
+  background-color: rgb(206, 133, 133);
+}
