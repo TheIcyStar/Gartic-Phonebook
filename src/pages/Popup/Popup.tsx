@@ -1,26 +1,22 @@
-import React, { useState } from 'react';
+import { runInAction } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import React, { useDebugValue, useState } from 'react';
+import { PlayerData, usePlayerStoreContext } from './players.store';
 import './Popup.css'
 
-type PlayerData = {
-  username: string,
-  imageURL: string
-}
-const dummyData: PlayerData[] = [
-  {
-    username: "OnlyTwentyCharacters",
-    imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/fd195f6a-5b03-41d4-9e92-e8e4019fb9f8-profile_image-300x300.png",
-  },
-  {
-    username: "asdf",
-    imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg",
-  }
-]
 
-const Popup = () => {
-  const [data, setData] = useState<PlayerData[]>(dummyData)
+const Popup = observer(() => {
+  const ctx = usePlayerStoreContext();
+  const players = ctx.players;
+
+  function setPlayerData(data: PlayerData[]) {
+    runInAction(() => {
+      ctx.players = data;
+    })
+  }
 
   function onAddPlayerClick(){
-    setData([...data, {username: "New user", imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg"}])
+    setPlayerData([...players, {username: "New user", imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg"}])
   }
 
   return (
@@ -29,12 +25,12 @@ const Popup = () => {
         <p className='text-lg text-white'>Custom Gartic Avatars</p>
       </div>
       <ul className='PlayerHolder mx-3'>
-        {data.map((player, index) => (<PlayerDisplay 
+        {players.map((player, index) => (<PlayerDisplay 
           playerData={player}
           index={index}
-          fullData={data}
-          setData={setData}
-          key={index} 
+          fullData={players}
+          setData={setPlayerData}
+          key={index}
         ></PlayerDisplay>)
         )}
 
@@ -42,9 +38,9 @@ const Popup = () => {
       </ul>
     </div>
   )
-}
+});
 
-function PlayerDisplay({playerData, index, fullData, setData}: {playerData: PlayerData, index: number, fullData: PlayerData[], setData: React.Dispatch<React.SetStateAction<PlayerData[]>>}): JSX.Element{
+function PlayerDisplay({playerData, index, fullData, setData}: {playerData: PlayerData, index: number, fullData: PlayerData[], setData: (data: PlayerData[]) => void}): JSX.Element{
 
   function handleTextChange(event: React.FormEvent<HTMLInputElement>){
     const target = event.target as HTMLInputElement
