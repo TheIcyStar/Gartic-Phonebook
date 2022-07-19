@@ -17,7 +17,7 @@ export class PlayersStore {
   }
 
   loadFromStorage() {
-    chrome.storage.sync.get(STORAGE_PLAYERS, (result) => {
+    chrome.storage.local.get(STORAGE_PLAYERS, (result) => {
       console.log('Loaded', result);
       if (result[STORAGE_PLAYERS]) {
         this.players = result[STORAGE_PLAYERS];
@@ -38,6 +38,6 @@ reaction(
   () => playerStore.players,
   (players) => {
     console.log('Saving', players.slice());
-    chrome.storage.sync.set({ [STORAGE_PLAYERS]: players.slice() });
+    chrome.storage.local.set({ [STORAGE_PLAYERS]: players.slice() });
   }
 );
