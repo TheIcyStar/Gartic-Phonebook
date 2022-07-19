@@ -1,3 +1,18 @@
+type PlayerData = {
+    username: string,
+    imageURL: string
+  }
+  const dummyData: PlayerData[] = [
+    {
+      username: "Ross",
+      imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/fd195f6a-5b03-41d4-9e92-e8e4019fb9f8-profile_image-300x300.png",
+    },
+    {
+      username: "Jerma",
+      imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg",
+    }
+  ]
+
 function findFirstChildByTagName(parent: HTMLElement, tagName: string): HTMLElement | undefined{
     for(const child of parent.children as HTMLCollectionOf<HTMLElement>){
         if(child.tagName === tagName){
@@ -8,7 +23,8 @@ function findFirstChildByTagName(parent: HTMLElement, tagName: string): HTMLElem
 
 type AvatarElements = {
     avatarElement: HTMLElement,
-    usernameElement: HTMLElement
+    usernameElement: HTMLElement,
+    username: string
 }
 
 function getAvatarElementsFromMain(): AvatarElements[]{
@@ -22,13 +38,12 @@ function getAvatarElementsFromMain(): AvatarElements[]{
     //get username input box
     let usernameInputHolder = findFirstChildByTagName(dataTab.children[0] as HTMLElement, "SPAN")
     if(!usernameInputHolder) return [];
-    let usernameInput = findFirstChildByTagName(usernameInputHolder, "INPUT")
+    let usernameInput = findFirstChildByTagName(usernameInputHolder, "INPUT") as HTMLInputElement
 
     //Check that everything exists
     if(!avatar || !usernameInput) return [];
 
-
-    return [{avatarElement: avatar, usernameElement: usernameInput}]
+    return [{avatarElement: avatar, usernameElement: usernameInput, username: usernameInput.value}]
 }
 
 
@@ -41,15 +56,16 @@ function getAvatarElementsFromLobby(): AvatarElements[]{
 
         //get avatar span element
         let avatarHolder = Array.from(user.getElementsByClassName("avatar") as HTMLCollectionOf<HTMLElement>)[0]
-        let avatar = findFirstChildByTagName(avatarHolder, "SPAN")
+        let avatarElement = findFirstChildByTagName(avatarHolder, "SPAN")
 
         //get username p element
-        let username = Array.from(user.getElementsByClassName("nick") as HTMLCollectionOf<HTMLElement>)[0]
+        let usernameElement = Array.from(user.getElementsByClassName("nick") as HTMLCollectionOf<HTMLElement>)[0]
 
         //Check that everything exists
-        if(!avatar || !username) continue;
+        if(!avatarElement || !usernameElement) continue;
 
-        AvatarElementsList.push({avatarElement: avatar, usernameElement: username})
+        console.log(usernameElement.innerText)
+        AvatarElementsList.push({avatarElement: avatarElement, usernameElement: usernameElement, username: usernameElement.innerText})
     }
 
     return AvatarElementsList
@@ -65,22 +81,22 @@ function getAvatarElementsFromBook(): AvatarElements[]{
     for(const balloon of balloons){
         //get avatar span element
         let avatarHolder = Array.from(balloon.getElementsByClassName("avatar") as HTMLCollectionOf<HTMLElement>)[0]
-        let avatar = findFirstChildByTagName(avatarHolder, "SPAN")
+        let avatarElement = findFirstChildByTagName(avatarHolder, "SPAN")
 
         //get username span element, by finding the span that has an sibling div with a ".balloon" class
         //this would have been SO much easier if the div.answerBalloon.answer used spans that had the nick class just how div.drawBalloon.drawing does 😔
-        let username: HTMLElement | undefined
+        let usernameElement: HTMLElement | undefined
         for(const div of balloons){
             for(const child of div.children as HTMLCollectionOf<HTMLElement>){
-                username = Array.from(child.children as HTMLCollectionOf<HTMLElement>).find(child => child.classList.contains("balloon"))
-                if(username) break;
+                usernameElement = Array.from(child.children as HTMLCollectionOf<HTMLElement>).find(child => child.classList.contains("balloon"))
+                if(usernameElement) break;
             }
         }
 
         //Check that everything exists
-        if(!avatar || !username) continue;
+        if(!avatarElement || !usernameElement) continue;
 
-        AvatarElementsList.push({avatarElement: avatar, usernameElement: username})
+        AvatarElementsList.push({avatarElement: avatarElement, usernameElement: usernameElement, username: usernameElement.innerText})
     }
 
     let playerListElements = getAvatarElementsFromLobby() //Re-use the lobby's getter code because the player list is identical
@@ -103,11 +119,14 @@ function findAvatarElements(): AvatarElements[]{
 
 function sweepAvatars(){
     let avatarElements = findAvatarElements()
-    console.log(avatarElements.length)
 
-    // Change avatars using avatarElements here
-    // avatar.style.backgroundImage = "url('https://static-cdn.jtvnw.net/jtv_user_pictures/fd195f6a-5b03-41d4-9e92-e8e4019fb9f8-profile_image-300x300.png')"
-    // avatar.style.borderRadius = "50%"
+    for(const avatar of avatarElements){
+        let targetModData = dummyData.find(data => data.username.toLowerCase() === avatar.username.toLowerCase())
+        if(!targetModData) continue;
+
+        avatar.avatarElement.style.backgroundImage = `url(${targetModData.imageURL})`
+        avatar.avatarElement.style.borderRadius = "50%"
+    }
 }
 
 setInterval(sweepAvatars, 1000)
