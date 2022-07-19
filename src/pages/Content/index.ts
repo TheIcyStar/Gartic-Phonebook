@@ -1,17 +1,16 @@
-type PlayerData = {
-    username: string,
-    imageURL: string
-  }
-  const dummyData: PlayerData[] = [
-    {
-      username: "Ross",
-      imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/fd195f6a-5b03-41d4-9e92-e8e4019fb9f8-profile_image-300x300.png",
-    },
-    {
-      username: "Jerma",
-      imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg",
+import { PlayerData } from "../Popup/players.store";
+
+let players: PlayerData[] = [];
+chrome.storage.local.get("players", (result) => {
+    if (result.players) {
+        players = result.players;
     }
-  ]
+});
+chrome.storage.onChanged.addListener(function(changes) {
+    if(changes.players){
+        players = changes.players.newValue;
+    }
+});
 
 function findFirstChildByTagName(parent: HTMLElement, tagName: string): HTMLElement | undefined{
     for(const child of parent.children as HTMLCollectionOf<HTMLElement>){
@@ -64,7 +63,6 @@ function getAvatarElementsFromLobby(): AvatarElements[]{
         //Check that everything exists
         if(!avatarElement || !usernameElement) continue;
 
-        console.log(usernameElement.innerText)
         AvatarElementsList.push({avatarElement: avatarElement, usernameElement: usernameElement, username: usernameElement.innerText})
     }
 
@@ -83,12 +81,18 @@ function getAvatarElementsFromBook(): AvatarElements[]{
         let avatarHolder = Array.from(balloon.getElementsByClassName("avatar") as HTMLCollectionOf<HTMLElement>)[0]
         let avatarElement = findFirstChildByTagName(avatarHolder, "SPAN")
 
-        //get username span element, by finding the span that has an sibling div with a ".balloon" class
-        //this would have been SO much easier if the div.answerBalloon.answer used spans that had the nick class just how div.drawBalloon.drawing does 😔
         let usernameElement: HTMLElement | undefined
-        for(const div of balloons){
-            for(const child of div.children as HTMLCollectionOf<HTMLElement>){
-                usernameElement = Array.from(child.children as HTMLCollectionOf<HTMLElement>).find(child => child.classList.contains("balloon"))
+        const nickElements = balloon.getElementsByClassName('nick');
+        if(nickElements.length > 0){
+            usernameElement = nickElements[0] as HTMLElement;
+        } else {
+            //get username span element, by finding the span that has an sibling div with a ".balloon" class
+            //this would have been SO much easier if the div.answerBalloon.answer used spans that had the nick class just how div.drawBalloon.drawing does 😔
+            for(const child of balloon.children as HTMLCollectionOf<HTMLElement>){
+                const currChildren = Array.from(child.children as HTMLCollectionOf<HTMLElement>);
+                if(currChildren.some(child => child.classList.contains("balloon"))) {
+                    usernameElement = currChildren.find(child => child.tagName === "SPAN") as HTMLElement;
+                }
                 if(usernameElement) break;
             }
         }
@@ -104,7 +108,7 @@ function getAvatarElementsFromBook(): AvatarElements[]{
 }
 
 function findAvatarElements(): AvatarElements[]{
-    let location = document.URL.substr(document.URL.lastIndexOf('/'))
+    let location = document.location.pathname;
 
     if(location === "/"){
         return getAvatarElementsFromMain()
@@ -118,11 +122,14 @@ function findAvatarElements(): AvatarElements[]{
 }
 
 function sweepAvatars(){
-    let avatarElements = findAvatarElements()
+    let avatarElements = findAvatarElements();
 
     for(const avatar of avatarElements){
-        let targetModData = dummyData.find(data => data.username.toLowerCase() === avatar.username.toLowerCase())
-        if(!targetModData) continue;
+        let targetModData = players.find(p => p.username.toLowerCase() === avatar.username.toLowerCase())
+        if(!targetModData) {
+            avatar.avatarElement.style.backgroundImage = '';
+            return;
+        }
 
         avatar.avatarElement.style.backgroundImage = `url(${targetModData.imageURL})`
         avatar.avatarElement.style.borderRadius = "50%"
