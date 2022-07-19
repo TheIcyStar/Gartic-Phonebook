@@ -44,10 +44,18 @@ function PlayerDisplay({playerData, index, fullData, setData}: {playerData: Play
 
   function handleTextChange(event: React.FormEvent<HTMLInputElement>){
     const target = event.target as HTMLInputElement
+    handleChange({username: target.value});
+  }
+
+  function setImageURL(url: string) {
+    handleChange({imageURL: url});
+  }
+
+  function handleChange(change: Partial<PlayerData>) {
     const newData = [...fullData]
     const player = {
       ...newData[index],
-      username: target.value
+      ...change
     }
     newData[index] = player
     setData(newData)
@@ -61,11 +69,30 @@ function PlayerDisplay({playerData, index, fullData, setData}: {playerData: Play
 
   return (
     <li className='AvatarHolder flex justify-start my-3 rounded-2xl shadow-md'>
-      <img className='AvatarPicture h-14 my-1 mx-1 aspect-square rounded-full items-center' src={playerData.imageURL} alt={playerData.username+"'s avatar"}></img>
+      <PhotoSelect playerData={playerData} setImageURL={setImageURL}></PhotoSelect>
       <input className="AvatarUsername basis-3/4 uppercase bg-transparent placeholder-gray-500" name='username' onChange={handleTextChange} placeholder="I'm blank!" value={playerData.username}></input>
       <button className='AvatarDelete rounded-full mx-3 my-0.5 px-2 text-md absolute right-1' onClick={handleRemove}>x</button>
     </li>
   )
 }
+
+const PhotoSelect = ({playerData, setImageURL}: {playerData: PlayerData, setImageURL: (photo: string) => void}) => {
+  function onChangePhoto(event: React.FormEvent<HTMLInputElement>){
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files[0]) {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(target.files[0]);
+      fileReader.addEventListener("load", () => {
+        setImageURL(fileReader.result as string);
+      });    
+    }
+  }
+  return (
+    <label className='PhotoSelect cursor-pointer hover:opacity-70'>
+      <input type='file' accept='image/*' onChange={onChangePhoto} className="hidden"></input>
+      <img className='AvatarPicture h-14 my-1 mx-1 aspect-square rounded-full items-center' src={playerData.imageURL} alt={playerData.username+"'s avatar"}></img>
+    </label>
+  )
+};
 
 export default Popup
