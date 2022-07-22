@@ -5,7 +5,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: 500px;
+  height: 500px;
 }
 
 .PlayerHolder {
@@ -29,12 +29,28 @@
 }
 
 .TopBanner {
-  background: rgb(48, 2, 79);
+  background: rgb(53 13 80);
+  display: flex;
+  padding: 5px 10px;
+  gap: 10px;
+}
+.TopBanner img {
+  width: 32px;
+}
+.TopBanner p {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: Helvetica, Arial, sans-serif;
+  text-shadow: 0 3px 1px black;
+  font-size: 1.25rem;
+  margin-top: 2px;
 }
 
 .AvatarHolder {
   background-color: rgba(255,255,255, 0.7);
   position: relative;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .AvatarUsername {
@@ -42,6 +58,10 @@
   font-weight: bold;
   font-size: 50px;
   font-size: 5vw;
+  width: 100px;
+  flex-grow: 1;
+  height: 60px;
+  margin: 4px;
 }
 
 .AvatarDelete {
@@ -51,9 +71,17 @@
   top: calc(50% - 11px);
   line-height: 22px;
   width: 22px;
-  position: absolute;
+  height: 22px;
+  margin-right: 8px;
 }
 
 .AvatarDelete:hover {
   background-color: rgb(206, 133, 133);
+}
+
+* {
+  transition: all 0.15s ease-in-out;
+}
+.AddButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
