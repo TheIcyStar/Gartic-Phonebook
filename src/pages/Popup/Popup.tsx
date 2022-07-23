@@ -22,11 +22,10 @@ const Popup = observer(() => {
 
   return (
     <div className="App">
-      <div className='TopBanner py-2 mx-0 shadow-xl'>
-        <img src="icon128.png" alt="logo"></img>
-        <p className='text-lg text-white'>Gartic Phonebook</p>
+      <div className='TopBanner py-0 mx-0 shadow-xl flex justify-center items-center overflow-hidden'>
+        <img className='flex-shrink-0 min-w-full min-h-full' src="banner.png" alt="banner"></img>
       </div>
-      <ul className='PlayerHolder px-3'>
+      <ul className='PlayerHolder pl-3'>
         {players.map((player, index) => (<PlayerDisplay 
           playerData={player}
           index={index}
