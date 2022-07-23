@@ -133,6 +133,8 @@ function sweepAvatars(){
 
         avatar.avatarElement.style.backgroundImage = `url(${targetModData.imageURL})`
         avatar.avatarElement.style.borderRadius = "50%"
+        avatar.avatarElement.style.height = 'auto';
+        avatar.avatarElement.style.minHeight = '100%';
     }
 }
 
