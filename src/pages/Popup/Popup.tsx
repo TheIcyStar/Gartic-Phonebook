@@ -1,6 +1,7 @@
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import React, { useDebugValue, useState } from 'react';
+import { shrinkImage } from './image-processing';
 import { PlayerData, usePlayerStoreContext } from './players.store';
 import './Popup.css'
 
@@ -83,11 +84,12 @@ const PhotoSelect = ({playerData, setImageURL}: {playerData: PlayerData, setImag
   function onChangePhoto(event: React.FormEvent<HTMLInputElement>){
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(target.files[0]);
-      fileReader.addEventListener("load", () => {
-        setImageURL(fileReader.result as string);
-      });    
+      const image = new Image();
+      image.addEventListener("load", () => {
+        const resized = shrinkImage(image, 256);
+        setImageURL(resized);
+      });   
+      image.src = URL.createObjectURL(target.files[0]); 
     }
   }
   return (
