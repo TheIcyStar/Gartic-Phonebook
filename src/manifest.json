@@ -7,14 +7,12 @@
     "default_icon": {
       "16": "icon16.png",
       "32": "icon32.png",
-      "48": "icon48.png",
       "128": "icon128.png"
     }
   },
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
-    "48": "icon48.png",
     "128": "icon128.png"
   },
   "content_scripts": [
@@ -25,7 +23,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
+      "resources": ["content.styles.css", "icon128.png", "icon32.png"],
       "matches": []
     }
   ],

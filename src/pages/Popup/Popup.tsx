@@ -22,9 +22,10 @@ const Popup = observer(() => {
   return (
     <div className="App">
       <div className='TopBanner py-2 mx-0 shadow-xl'>
-        <p className='text-lg text-white'>Custom Gartic Avatars</p>
+        <img src="icon128.png" alt="logo"></img>
+        <p className='text-lg text-white'>Gartic Phonebook</p>
       </div>
-      <ul className='PlayerHolder mx-3'>
+      <ul className='PlayerHolder px-3'>
         {players.map((player, index) => (<PlayerDisplay 
           playerData={player}
           index={index}
@@ -34,7 +35,9 @@ const Popup = observer(() => {
         ></PlayerDisplay>)
         )}
 
-        <button id='AddPlayerButton' className='AddButton text-6xl border-2 border-white align-middle text-center text-white border-dotted rounded-2xl min-w-full' onClick={onAddPlayerClick}>+</button>
+        <button id='AddPlayerButton' className='AddButton text-6xl border-2 border-white text-center text-white border-dotted rounded-2xl min-w-full' onClick={onAddPlayerClick}>
+          <span className='align-text-top'>+</span>
+        </button>
       </ul>
     </div>
   )
@@ -70,8 +73,8 @@ function PlayerDisplay({playerData, index, fullData, setData}: {playerData: Play
   return (
     <li className='AvatarHolder flex justify-start my-3 rounded-2xl shadow-md'>
       <PhotoSelect playerData={playerData} setImageURL={setImageURL}></PhotoSelect>
-      <input className="AvatarUsername basis-3/4 uppercase bg-transparent placeholder-gray-500" name='username' onChange={handleTextChange} placeholder="I'm blank!" value={playerData.username}></input>
-      <button className='AvatarDelete rounded-full mx-3 my-0.5 px-2 text-md absolute right-1' onClick={handleRemove}>x</button>
+      <input className="AvatarUsername uppercase bg-transparent placeholder-gray-500" name='username' onChange={handleTextChange} placeholder="I'm blank!" value={playerData.username}></input>
+      <button className='AvatarDelete rounded-full' onClick={handleRemove}>X</button>
     </li>
   )
 }
