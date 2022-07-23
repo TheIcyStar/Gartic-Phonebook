@@ -24,5 +24,5 @@ export function shrinkImage(image: HTMLImageElement, maxWidth: number): string {
     // Draw resized image to canvas
     ctx.drawImage(image, xOffset, yOffset, cropWidth, cropWidth, 0, 0, maxWidth, maxWidth);
 
-    return canvas.toDataURL("image/jpeg");
+    return canvas.toDataURL("image/png");
 }
