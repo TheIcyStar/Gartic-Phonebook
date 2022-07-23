@@ -18,13 +18,13 @@ Ideal for streamers, content creators, or for those who want to see their friend
 (Coming soon!)
 
 ## Install from GitHub as an unpacked extension:
-0) Install the latest version of [NodeJS](https://nodejs.org/)
-1) Clone/download the repository from GitHub
-2) Open your terminal to the repository's directory
-2) Run `npm install`
-3) Run `npm start`
-4) Load the extention into chrome:
-    i) Access `chrome://extensions/`
-    ii) Enable developer mode
-    iii) Click on `Load unpacked extension
-    iv) Select the project's `build` folder
+0. Install the latest version of [NodeJS](https://nodejs.org/)
+1. Clone/download the repository from GitHub
+2. Open your terminal to the repository's directory
+2. Run `npm install`
+3. Run `npm start`
+4. Load the extention into chrome:
+    * Access `chrome://extensions/`
+    * Enable developer mode
+    * Click on `Load unpacked extension
+    * Select the project's `build` folder
