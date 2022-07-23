@@ -53,15 +53,22 @@
   justify-content: space-around;
 }
 
+.TextBoxes {
+  width: 100px;
+  flex-grow: 1;
+  margin: 4px;
+}
+
 .AvatarUsername {
   color: rgb(48,26,107);
   font-weight: bold;
   font-size: 50px;
   font-size: 5vw;
-  width: 100px;
-  flex-grow: 1;
-  height: 60px;
-  margin: 4px;
+  height: 36px;
+  width: 100%;
+}
+.AvatarNote {
+  width: 100%;
 }
 
 .AvatarDelete {

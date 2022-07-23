@@ -23,7 +23,8 @@ function findFirstChildByTagName(parent: HTMLElement, tagName: string): HTMLElem
 type AvatarElements = {
     avatarElement: HTMLElement,
     usernameElement: HTMLElement,
-    username: string
+    username: string,
+    noteElement?: HTMLElement
 }
 
 function getAvatarElementsFromMain(): AvatarElements[]{
@@ -63,10 +64,29 @@ function getAvatarElementsFromLobby(): AvatarElements[]{
         //Check that everything exists
         if(!avatarElement || !usernameElement) continue;
 
-        AvatarElementsList.push({avatarElement: avatarElement, usernameElement: usernameElement, username: usernameElement.innerText})
+        const noteElement = getOrCreateNote(usernameElement, '#666');
+
+        AvatarElementsList.push({
+            avatarElement: avatarElement, 
+            usernameElement: usernameElement, 
+            username: usernameElement.innerText,
+            noteElement: noteElement
+        });
     }
 
     return AvatarElementsList
+}
+
+function getOrCreateNote(usernameElement: HTMLElement, color: string = '#aaa') {
+    let noteElement = (usernameElement.parentElement!.getElementsByClassName("note") as HTMLCollectionOf<HTMLElement>)[0];
+    // Add note element if it doesn't exist as <span class="note">
+    if (!noteElement) {
+        noteElement = document.createElement("span");
+        noteElement.classList.add("note");
+        noteElement.style.cssText = `font-size: 12px; color: ${color}; font-family: 'Black';`;
+        usernameElement.after(noteElement);
+    }
+    return noteElement;
 }
 
 //This function also uses functionality from getAvatarElementsFromLobby(), as the method for getting from the player list is identical to the lobby's
@@ -100,7 +120,14 @@ function getAvatarElementsFromBook(): AvatarElements[]{
         //Check that everything exists
         if(!avatarElement || !usernameElement) continue;
 
-        AvatarElementsList.push({avatarElement: avatarElement, usernameElement: usernameElement, username: usernameElement.innerText})
+        const noteElement = getOrCreateNote(usernameElement);
+
+        AvatarElementsList.push({
+            avatarElement: avatarElement, 
+            usernameElement: usernameElement, 
+            username: usernameElement.innerText,
+            noteElement: noteElement
+        });
     }
 
     let playerListElements = getAvatarElementsFromLobby() //Re-use the lobby's getter code because the player list is identical
@@ -135,6 +162,10 @@ function sweepAvatars(){
         avatar.avatarElement.style.borderRadius = "50%"
         avatar.avatarElement.style.height = 'auto';
         avatar.avatarElement.style.minHeight = '100%';
+
+        if(avatar.noteElement) {
+            avatar.noteElement.innerText = targetModData.note || '';
+        }
     }
 }
 

@@ -5,7 +5,8 @@ export const STORAGE_PLAYERS = 'players';
 
 export type PlayerData = {
   username: string,
-  imageURL: string
+  imageURL: string,
+  note?: string
 }
 
 export class PlayersStore {

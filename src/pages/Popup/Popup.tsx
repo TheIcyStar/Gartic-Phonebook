@@ -51,6 +51,11 @@ function PlayerDisplay({playerData, index, fullData, setData}: {playerData: Play
     handleChange({username: target.value});
   }
 
+  function handleNoteChange(event: React.FormEvent<HTMLInputElement>){
+    const target = event.target as HTMLInputElement
+    handleChange({note: target.value});
+  }
+
   function setImageURL(url: string) {
     handleChange({imageURL: url});
   }
@@ -74,7 +79,21 @@ function PlayerDisplay({playerData, index, fullData, setData}: {playerData: Play
   return (
     <li className='AvatarHolder flex justify-start my-3 rounded-2xl shadow-md'>
       <PhotoSelect playerData={playerData} setImageURL={setImageURL}></PhotoSelect>
-      <input className="AvatarUsername uppercase bg-transparent placeholder-gray-500" name='username' onChange={handleTextChange} placeholder="I'm blank!" value={playerData.username}></input>
+      <div className="TextBoxes">
+        <input 
+          className="AvatarUsername uppercase bg-transparent placeholder-gray-500" 
+          name='username' 
+          onChange={handleTextChange} placeholder="Player Name" 
+          value={playerData.username}>
+        </input>
+
+        <input 
+          className="AvatarNote bg-transparent placeholder-gray-500" 
+          name='note' 
+          onChange={handleNoteChange} placeholder="Enter a note" 
+          value={playerData.note}>
+        </input>
+      </div>
       <button className='AvatarDelete rounded-full' onClick={handleRemove}>X</button>
     </li>
   )
