@@ -17,7 +17,7 @@ const Popup = observer(() => {
   }
 
   function onAddPlayerClick(){
-    setPlayerData([...players, {username: "New user", imageURL: "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-300x300.jpeg"}])
+    setPlayerData([...players, {username: "New user", imageURL: "placeholder-avatar.png"}])
   }
 
   return (
