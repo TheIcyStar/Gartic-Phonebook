@@ -17,7 +17,7 @@ Ideal for streamers, content creators, or for those who want to see their friend
 ## Install from the Chrome Web Store
 (Coming soon!)
 
-## How to build as an unpacked extension:
+## Install from GitHub as an unpacked extension:
 0) Install the latest version of [NodeJS](https://nodejs.org/)
 1) Clone/download the repository from GitHub
 2) Open your terminal to the repository's directory
