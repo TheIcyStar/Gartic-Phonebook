@@ -10,6 +10,10 @@ const DEFAULT_PLAYERS: PlayerData[] = [{
 }];
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.local.set({ players: DEFAULT_PLAYERS });
-    console.log('Added default list of user configs');
+  chrome.storage.local.get("players", (result) => {
+    if (!result.players) {
+      chrome.storage.local.set({ players: DEFAULT_PLAYERS });
+      console.log('Added default list of user configs');
+    }
   });
+});
