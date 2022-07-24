@@ -11,7 +11,7 @@ Ideal for streamers, content creators, or for those who want to see their friend
 ![screenshot-players](https://user-images.githubusercontent.com/13933661/180619027-2037d335-8c41-4747-87ed-217f48c05f29.png)
 
 **Results screen with changed avatars**
-![screenshot-book](https://user-images.githubusercontent.com/13933661/180619033-5ee01593-0278-48a5-9f48-f91f4a5f3737.png)
+![screenshot-book](https://user-images.githubusercontent.com/13933661/180663761-fedd26f3-11b3-4ffc-bc7d-a7c246e6b74f.png)
 
 
 ## Install from the Chrome Web Store
