@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Custom Gartic Avatars",
+  "name": "Gartic Phonebook",
   "description": "Lets you replace Gartic Phone's default avatars with custom images",
   "action": {
     "default_popup": "popup.html",
@@ -23,8 +23,8 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["content.styles.css", "icon128.png", "icon32.png"],
-      "matches": []
+      "resources": ["content.styles.css", "icon128.png", "icon32.png", "placeholder-avatar.png"],
+      "matches": ["https://garticphone.com/*"]
     }
   ],
   "background": {

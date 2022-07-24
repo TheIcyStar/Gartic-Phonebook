@@ -17,7 +17,7 @@ const Popup = observer(() => {
   }
 
   function onAddPlayerClick(){
-    setPlayerData([...players, {username: "New user", imageURL: "placeholder-avatar.png"}])
+    setPlayerData([...players, {username: "New user", imageURL: chrome.runtime.getURL('placeholder-avatar.png')}])
   }
 
   return (

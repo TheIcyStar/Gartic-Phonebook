@@ -2,11 +2,11 @@ import { PlayerData } from "../pages/Popup/players.store";
 
 const DEFAULT_PLAYERS: PlayerData[] = [{
   username: "Sample player",
-  imageURL: "placeholder-avatar.png"
+  imageURL: chrome.runtime.getURL('placeholder-avatar.png')
 },
 {
   username: "Change me!",
-  imageURL: "placeholder-avatar.png"
+  imageURL: chrome.runtime.getURL('placeholder-avatar.png')
 }];
 
 chrome.runtime.onInstalled.addListener(() => {
