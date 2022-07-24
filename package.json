@@ -1,11 +1,11 @@
 {
-  "name": "custom-gartic-avatars",
+  "name": "gartic-phonebook",
   "version": "1.0.0",
   "description": "Lets you replace Gartic Phone's default avatars with custom images",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TheIcyStar/Custom-Gartic-Avatars"
+    "url": "https://github.com/TheIcyStar/Gartic-Phonebook"
   },
   "scripts": {
     "build": "node utils/build.js",
