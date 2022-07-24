@@ -4,77 +4,29 @@ let players: PlayerData[] = [];
 chrome.storage.local.get("players", (result) => {
     if (result.players) {
         players = result.players;
+        replaceAvatars();
     }
 });
 chrome.storage.onChanged.addListener(function(changes) {
     if(changes.players){
         players = changes.players.newValue;
+        replaceAvatars();
     }
 });
 
 function findFirstChildByTagName(parent: HTMLElement, tagName: string): HTMLElement | undefined{
     for(const child of parent.children as HTMLCollectionOf<HTMLElement>){
-        if(child.tagName === tagName){
+        if(child.tagName.toLowerCase() === tagName.toLowerCase()){
             return child
         }
     }
 }
 
-type AvatarElements = {
+type AvatarInfo = {
     avatarElement: HTMLElement,
-    usernameElement: HTMLElement,
+    usernameElement?: HTMLElement,
     username: string,
     noteElement?: HTMLElement
-}
-
-function getAvatarElementsFromMain(): AvatarElements[]{
-    let user = Array.from(document.getElementsByClassName("user") as HTMLCollectionOf<HTMLElement>)[0]
-    let dataTab = Array.from(user.getElementsByClassName("data") as HTMLCollectionOf<HTMLElement>)[0]
-
-    //get avatar span element
-    let avatarHolder = Array.from(dataTab.getElementsByClassName("avatar") as HTMLCollectionOf<HTMLElement>)[0]
-    let avatar = findFirstChildByTagName(avatarHolder, "SPAN")
-
-    //get username input box
-    let usernameInputHolder = findFirstChildByTagName(dataTab.children[0] as HTMLElement, "SPAN")
-    if(!usernameInputHolder) return [];
-    let usernameInput = findFirstChildByTagName(usernameInputHolder, "INPUT") as HTMLInputElement
-
-    //Check that everything exists
-    if(!avatar || !usernameInput) return [];
-
-    return [{avatarElement: avatar, usernameElement: usernameInput, username: usernameInput.value}]
-}
-
-
-function getAvatarElementsFromLobby(): AvatarElements[]{
-    let AvatarElementsList: AvatarElements[] = []
-    let userElements = Array.from(document.getElementsByClassName("user") as HTMLCollectionOf<HTMLElement>)
-
-    for(const user of userElements){
-        if(user.classList.contains("empty") || user.classList.contains("guest")) continue;
-
-        //get avatar span element
-        let avatarHolder = Array.from(user.getElementsByClassName("avatar") as HTMLCollectionOf<HTMLElement>)[0]
-        let avatarElement = findFirstChildByTagName(avatarHolder, "SPAN")
-
-        //get username p element
-        let usernameElement = Array.from(user.getElementsByClassName("nick") as HTMLCollectionOf<HTMLElement>)[0]
-
-        //Check that everything exists
-        if(!avatarElement || !usernameElement) continue;
-
-        const noteElement = getOrCreateNote(usernameElement, '#666');
-
-        AvatarElementsList.push({
-            avatarElement: avatarElement, 
-            usernameElement: usernameElement, 
-            username: usernameElement.innerText,
-            noteElement: noteElement
-        });
-    }
-
-    return AvatarElementsList
 }
 
 function getOrCreateNote(usernameElement: HTMLElement, color: string = '#aaa') {
@@ -89,73 +41,16 @@ function getOrCreateNote(usernameElement: HTMLElement, color: string = '#aaa') {
     return noteElement;
 }
 
-//This function also uses functionality from getAvatarElementsFromLobby(), as the method for getting from the player list is identical to the lobby's
-function getAvatarElementsFromBook(): AvatarElements[]{
-    let AvatarElementsList: AvatarElements[] = []
-    let drawingElements = Array.from(document.getElementsByClassName("drawing") as HTMLCollectionOf<HTMLElement>)
-    let answerElements = Array.from(document.getElementsByClassName("answer") as HTMLCollectionOf<HTMLElement>)
-    let balloons = [...drawingElements, ...answerElements]
 
-    for(const balloon of balloons){
-        //get avatar span element
-        let avatarHolder = Array.from(balloon.getElementsByClassName("avatar") as HTMLCollectionOf<HTMLElement>)[0]
-        let avatarElement = findFirstChildByTagName(avatarHolder, "SPAN")
+let avatarInfos: AvatarInfo[] = [];
 
-        let usernameElement: HTMLElement | undefined
-        const nickElements = balloon.getElementsByClassName('nick');
-        if(nickElements.length > 0){
-            usernameElement = nickElements[0] as HTMLElement;
-        } else {
-            //get username span element, by finding the span that has an sibling div with a ".balloon" class
-            //this would have been SO much easier if the div.answerBalloon.answer used spans that had the nick class just how div.drawBalloon.drawing does 😔
-            for(const child of balloon.children as HTMLCollectionOf<HTMLElement>){
-                const currChildren = Array.from(child.children as HTMLCollectionOf<HTMLElement>);
-                if(currChildren.some(child => child.classList.contains("balloon"))) {
-                    usernameElement = currChildren.find(child => child.tagName === "SPAN") as HTMLElement;
-                }
-                if(usernameElement) break;
-            }
-        }
-
-        //Check that everything exists
-        if(!avatarElement || !usernameElement) continue;
-
-        const noteElement = getOrCreateNote(usernameElement);
-
-        AvatarElementsList.push({
-            avatarElement: avatarElement, 
-            usernameElement: usernameElement, 
-            username: usernameElement.innerText,
-            noteElement: noteElement
-        });
-    }
-
-    let playerListElements = getAvatarElementsFromLobby() //Re-use the lobby's getter code because the player list is identical
-    return [...AvatarElementsList, ...playerListElements]
-}
-
-function findAvatarElements(): AvatarElements[]{
-    let location = document.location.pathname;
-
-    if(location === "/"){
-        return getAvatarElementsFromMain()
-    } else if(location === "/lobby"){
-        return getAvatarElementsFromLobby()
-    } else if(location === "/book"){
-        return getAvatarElementsFromBook()
-    }
-
-    return []
-}
-
-function sweepAvatars(){
-    let avatarElements = findAvatarElements();
-
-    for(const avatar of avatarElements){
+function replaceAvatars(){
+    avatarInfos = avatarInfos.filter(info => info.avatarElement && document.body.contains(info.avatarElement));
+    for(const avatar of avatarInfos){
         let targetModData = players.find(p => p.username.toLowerCase() === avatar.username.toLowerCase())
         if(!targetModData) {
             avatar.avatarElement.style.backgroundImage = '';
-            return;
+            continue;
         }
 
         avatar.avatarElement.style.backgroundImage = `url(${targetModData.imageURL})`
@@ -164,9 +59,168 @@ function sweepAvatars(){
         avatar.avatarElement.style.minHeight = '100%';
 
         if(avatar.noteElement) {
-            avatar.noteElement.innerText = targetModData.note || '';
+            avatar.noteElement.textContent = targetModData.note || '';
         }
     }
 }
 
-setInterval(sweepAvatars, 1000)
+//setInterval(sweepAvatars, 1000)
+const pageObservers: MutationObserver[] = [];
+
+function onPageChange(changes: MutationRecord[]){
+    // Find any added nodes that are DOM Elements with the class "screen"
+    let newNodes = changes.filter(change => change.addedNodes.length > 0).flatMap(change => [...change.addedNodes]);
+    let newScreenNodes = newNodes.filter(node => node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("screen"));
+
+    if (newScreenNodes.length > 0) {
+        
+        const newScreen = newScreenNodes.pop() as HTMLElement;
+        
+        pageObservers.forEach(observer => observer.disconnect());
+        pageObservers.length = 0;
+        handleNewScreen(newScreen);
+    }
+}
+
+function handleNewScreen(newScreen: HTMLElement){
+    // Check for the new screen containing the start screen
+    const startScreen = newScreen.querySelector(".start");
+    if (startScreen) {
+        watchStartScreen(startScreen);
+    }
+    // Check for the new screen containing the player list
+    const playerList = newScreen.querySelector(".players") as HTMLElement;
+    if (playerList) {
+        initPlayerList(playerList);
+        const playerListObserver = new MutationObserver(onPlayerListChange);
+        playerListObserver.observe(playerList, { childList: true, subtree: true });
+        pageObservers.push(playerListObserver);
+    }
+    // Check for the new screen containing the book
+    const book = newScreen.querySelector(".scrapbook") as HTMLElement;
+    if (book) {
+        const bookObserver = new MutationObserver(onBookChange);
+        bookObserver.observe(book, { childList: true, subtree: true });
+        pageObservers.push(bookObserver);
+    }
+}
+
+function watchStartScreen(start: Element) {
+    const userSection = start.querySelector(".user");
+    const nameInput = userSection?.querySelector("input") as HTMLInputElement;
+    const avatar = userSection?.querySelector(".avatar > span");
+    if (nameInput && avatar) {
+        const avatarElement = avatar as HTMLElement;
+        function updateLobby() {
+            const name = nameInput.value;
+            addOrReplaceAvatarInfo({
+                avatarElement: avatarElement,
+                username: name
+            });
+            replaceAvatars();
+        }
+        nameInput.addEventListener("keyup", () => updateLobby());
+        updateLobby();
+    }
+}
+
+function initPlayerList(playerList: HTMLElement) {
+    const users = [...playerList.querySelectorAll(".user")];
+    for (const user of users) {
+        addUserToAvatarInfos(user);
+    }
+    replaceAvatars();
+}
+
+function onPlayerListChange(changes: MutationRecord[]) {
+    // Find any added nodes that are DOM Elements with the class "user"
+    let addedNodes = changes.filter(change => change.addedNodes.length > 0).flatMap(change => [...change.addedNodes]);
+    let addedUserNodes = addedNodes.filter(node => node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("user"));
+    addedUserNodes.forEach(user => addUserToAvatarInfos(user as HTMLElement));
+
+    replaceAvatars();
+}
+
+function addUserToAvatarInfos(user: Element){
+    const avatar = user.querySelector(".avatar > span");
+    if (avatar) {
+        const avatarElement = avatar as HTMLElement;
+        const nameElement = user.querySelector(".nick") as HTMLElement;
+        const noteElement = getOrCreateNote(nameElement, '#666');
+        addOrReplaceAvatarInfo({
+            avatarElement: avatarElement,
+            username: nameElement?.innerText,
+            noteElement: noteElement
+        });
+    }
+}
+
+function onBookChange(changes: MutationRecord[]) {
+    let addedNodes = changes.filter(change => change.addedNodes.length > 0).flatMap(change => [...change.addedNodes]);
+    let items = addedNodes.filter(node => node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("item"));
+    items.forEach(item => addBookItemToAvatarInfos(item as HTMLElement));
+    replaceAvatars();
+}
+
+function addBookItemToAvatarInfos(item: HTMLElement) {
+    let avatarElement: HTMLElement | undefined, 
+        nameElement: HTMLElement | undefined, 
+        noteElement: HTMLElement | undefined;
+    
+    const answerBalloon = item.querySelector(".answerBalloon") as HTMLElement;
+    if (answerBalloon) {
+        avatarElement = answerBalloon.querySelector(".avatar > span") as HTMLElement;
+        const nameAndNoteContainer = findFirstChildByTagName(answerBalloon, "div");
+        if (!nameAndNoteContainer) {
+            return;
+        }
+        nameElement = findFirstChildByTagName(nameAndNoteContainer, "span") as HTMLElement;
+        noteElement = getOrCreateNote(nameElement);
+        addOrReplaceAvatarInfo({
+            avatarElement: avatarElement,
+            username: nameElement?.innerText,
+            noteElement: noteElement
+        });
+    } else {
+        const drawBalloon = item.querySelector(".drawBalloon") as HTMLElement;
+        if (drawBalloon) {
+            avatarElement = drawBalloon.querySelector(".avatar > span") as HTMLElement;
+            nameElement = drawBalloon.querySelector(".nick") as HTMLElement;
+            noteElement = getOrCreateNote(nameElement);
+        }
+    }
+    if (avatarElement) {
+        addOrReplaceAvatarInfo({
+            avatarElement: avatarElement,
+            username: nameElement?.innerText || '',
+            noteElement: noteElement
+        });
+    }
+}
+
+
+function addOrReplaceAvatarInfo(avatarInfo: AvatarInfo) {
+    const index = avatarInfos.findIndex(e => e.avatarElement === avatarInfo.avatarElement);
+    if (index >= 0) {
+        avatarInfos[index] = avatarInfo;
+    } else {
+        avatarInfos.push(avatarInfo);
+    }
+}
+
+function setup() {
+    console.log('setup');
+    const contentEl = document.getElementById('content');
+    if (!contentEl) {
+        setTimeout(setup, 1000);
+        return;
+    }
+    const observer = new MutationObserver(onPageChange);
+    observer.observe(contentEl, {childList: true});
+
+    const screenEl = document.getElementsByClassName('screen')[0] as HTMLElement;
+    if (screenEl) {
+        handleNewScreen(screenEl);
+    }
+}
+setup();
