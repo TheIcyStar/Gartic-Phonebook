@@ -22,7 +22,17 @@ Ideal for streamers, content creators, or for those who want to see their friend
 ## Install from the Chrome Web Store
 (Coming soon!)
 
-## Install from GitHub as an unpacked extension:
+## Install as an unpacked extension
+1. Go to this repository's [releases tab](https://github.com/TheIcyStar/Gartic-Phonebook/releases)
+2. Download the zip file from the latest release (Named `gartic-PB-v1.x.x-unpacked.zip`, NOT the source code!)
+3. Extract the folder `gartic-phonebook-1.x.x` from the zip
+4. Load the extracted folder into chrome:
+    * Access `chrome://extensions/`
+    * Enable developer mode
+    * Click on `Load unpacked extension`
+    * Select the folder that you extracted `gartic-phonebook-1.x.x`
+
+## Build from source:
 0. Install the latest version of [NodeJS](https://nodejs.org/)
 1. Clone/download the repository from GitHub
 2. Open your terminal to the repository's directory
@@ -31,5 +41,5 @@ Ideal for streamers, content creators, or for those who want to see their friend
 4. Load the extention into chrome:
     * Access `chrome://extensions/`
     * Enable developer mode
-    * Click on `Load unpacked extension
+    * Click on `Load unpacked extension`
     * Select the project's `build` folder
