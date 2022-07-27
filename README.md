@@ -20,7 +20,7 @@ Ideal for streamers, content creators, or for those who want to see their friend
 
 
 ## Install from the Chrome Web Store
-(Coming soon!)
+Check the extension out on the Chrome Web Store [here](https://chrome.google.com/webstore/detail/gartic-phonebook/aaeibnbllijldnmmioleniagkoipglbk)
 
 ## Install as an unpacked extension
 1. Go to this repository's [releases tab](https://github.com/TheIcyStar/Gartic-Phonebook/releases)
