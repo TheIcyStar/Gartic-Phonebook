@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Gartic Phonebook",
   "description": "Lets you replace Gartic Phone's default avatars with custom images",
+  "version": "1.1.0",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

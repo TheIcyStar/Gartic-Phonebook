@@ -9,6 +9,7 @@ export const ImportExport = observer(() => {
   
     async function handleImport(event: React.FormEvent<HTMLInputElement>){
       const target = event.target as HTMLInputElement;
+      console.log(target.files);
       if (target.files && target.files.length > 0) {
         const firstFile = target.files[0];
         if (firstFile.name.endsWith('.gpb')) {
@@ -25,6 +26,7 @@ export const ImportExport = observer(() => {
           }
         }
       }
+      target.value = '';
     }
   
     function addPlayerByFile(file: File): Promise<PlayerData[]> {
@@ -41,7 +43,7 @@ export const ImportExport = observer(() => {
               player.imageURL = imageURL;
             }
             else {
-              ctx.players = [...ctx.players, {username: playerName, imageURL}];
+              ctx.players = [...ctx.players, {username: playerName, imageURL, note: ''}];
             }
             resolve(ctx.players);
           });

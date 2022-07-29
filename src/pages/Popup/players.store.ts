@@ -1,4 +1,4 @@
-import { makeAutoObservable, reaction } from 'mobx';
+import { makeAutoObservable, reaction, runInAction } from 'mobx';
 import React from 'react';
 
 export const STORAGE_PLAYERS = 'players';
@@ -6,7 +6,7 @@ export const STORAGE_PLAYERS = 'players';
 export type PlayerData = {
   username: string,
   imageURL: string,
-  note?: string
+  note: string
 }
 
 export class PlayersStore {
@@ -21,7 +21,9 @@ export class PlayersStore {
     chrome.storage.local.get(STORAGE_PLAYERS, (result) => {
       console.log('Loaded', result);
       if (result[STORAGE_PLAYERS]) {
-        this.players = result[STORAGE_PLAYERS];
+        runInAction(() => {
+          this.players = result[STORAGE_PLAYERS];
+        });
       }
     });
   }
