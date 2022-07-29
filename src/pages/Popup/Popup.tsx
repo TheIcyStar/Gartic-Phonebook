@@ -1,7 +1,8 @@
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import React, { useDebugValue, useState } from 'react';
+import React from 'react';
 import { shrinkImage } from './image-processing';
+import { ImportExport } from './ImportExport';
 import { PlayerData, usePlayerStoreContext } from './players.store';
 import './Popup.css'
 
@@ -17,7 +18,7 @@ const Popup = observer(() => {
   }
 
   function onAddPlayerClick(){
-    setPlayerData([...players, {username: "New user", imageURL: chrome.runtime.getURL('placeholder-avatar.png')}])
+    setPlayerData([...players, {username: "New user", imageURL: chrome.runtime.getURL('placeholder-avatar.png'), note: ''}])
   }
 
   return (
@@ -25,6 +26,7 @@ const Popup = observer(() => {
       <div className='TopBanner py-0 mx-0 shadow-xl flex justify-center items-center overflow-hidden'>
         <img className='flex-shrink-0 min-w-full min-h-full' src="banner.png" alt="banner"></img>
       </div>
+      <ImportExport></ImportExport>
       <ul className='PlayerHolder pl-3'>
         {players.map((player, index) => (<PlayerDisplay 
           playerData={player}
