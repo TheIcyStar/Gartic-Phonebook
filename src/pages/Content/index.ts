@@ -50,6 +50,9 @@ function replaceAvatars(){
         let targetModData = players.find(p => p.username.toLowerCase() === avatar.username.toLowerCase())
         if(!targetModData) {
             avatar.avatarElement.style.backgroundImage = '';
+            if (avatar.noteElement) {
+                avatar.noteElement.textContent = '';
+            }
             continue;
         }
 
