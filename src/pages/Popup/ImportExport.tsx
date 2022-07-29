@@ -6,12 +6,18 @@ import React from 'react';
 
 export const ImportExport = observer(() => {
     const ctx = usePlayerStoreContext();
+    const drop = React.useRef<HTMLLabelElement>(null);
   
     async function handleImport(event: React.FormEvent<HTMLInputElement>){
       const target = event.target as HTMLInputElement;
-      console.log(target.files);
       if (target.files && target.files.length > 0) {
-        const firstFile = target.files[0];
+        await handleFiles(target.files);
+      }
+      target.value = '';
+    }
+
+    async function handleFiles(files: FileList) {
+        const firstFile = files[0];
         if (firstFile.name.endsWith('.gpb')) {
           const reader = new FileReader();
           reader.onload = (e) => {
@@ -21,13 +27,11 @@ export const ImportExport = observer(() => {
           reader.readAsText(firstFile);
         } else {
           // Load each image as a new player with player name as the file name without the extension
-          for(let i = 0; i < target.files.length; i++) {
-            await addPlayerByFile(target.files[i]);
+          for(let i = 0; i < files.length; i++) {
+            await addPlayerByFile(files[i]);
           }
         }
-      }
-      target.value = '';
-    }
+    } 
   
     function addPlayerByFile(file: File): Promise<PlayerData[]> {
       return new Promise((resolve, reject) => {
@@ -80,11 +84,48 @@ export const ImportExport = observer(() => {
         runInAction(() => ctx.players = []);
       }
     }
+
+    React.useEffect(() => {
+        if (drop.current) {
+            const dropEl = drop.current;
+            dropEl.addEventListener('dragover', handleDragOver);
+            dropEl.addEventListener('dragleave', handleDragLeave);
+            dropEl.addEventListener('drop', handleDrop);
+        
+            return () => {
+                dropEl.removeEventListener('dragenter', handleDragOver);
+                dropEl.removeEventListener('dragleave', handleDragLeave);
+                dropEl.removeEventListener('drop', handleDrop);
+            };
+        }
+      }, []);
+      
+      const handleDragOver = (e: DragEvent) => {
+        drop.current?.classList.add('drag-over');
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      const handleDragLeave = (e: DragEvent) => {
+        drop.current?.classList.remove('drag-over');
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      
+      const handleDrop = (e: DragEvent) => {
+        drop.current?.classList.remove('drag-over');
+        
+        const files = e.dataTransfer?.files;
+        if (files) {
+            handleFiles(files);
+        }
+        e.preventDefault();
+        e.stopPropagation();
+      };
   
     // Import and Export buttons side-by-side
     return (
-      <div className='ImportExportHolder flex justify-between items-center'>
-        <label className='ImportButton btn cursor-pointer'>
+      <div className='ImportExportHolder flex flex-wrap justify-between items-center'>
+        <label className='ImportButton btn cursor-pointer' ref={drop}>
           <input type='file' accept='.gpb,image/*' multiple onChange={handleImport} className="hidden"></input>
           <span>Import</span>
         </label>
