@@ -42,9 +42,11 @@ export const ImportExport = observer(() => {
           const imageURL = shrinkImage(image, 256);
           runInAction(() => {
             // add or replace player based on name
-            const player = ctx.players.find(p => p.username.toLowerCase() === playerName.toLowerCase());
-            if (player) {
-              player.imageURL = imageURL;
+            const playerIndex = ctx.players.findIndex(p => p.username.toLowerCase() === playerName.toLowerCase());
+            if (playerIndex >= 0) {
+              const players = [...ctx.players];
+              players[playerIndex] = {...ctx.players[playerIndex], imageURL};
+              ctx.players = players;
             }
             else {
               ctx.players = [...ctx.players, {username: playerName, imageURL, note: ''}];
